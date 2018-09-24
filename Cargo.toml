@@ -5,3 +5,4 @@ authors = ["Andreas Ots <andreasots@gmail.com>"]
 license = "Apache-2.0"
 
 [dependencies]
+rayon = "1.0.2"
