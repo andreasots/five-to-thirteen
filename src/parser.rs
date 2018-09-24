@@ -8,7 +8,7 @@ pub const RPAREN: u8 = 6;
 pub const BASE: u64 = 7;
 
 // expr ::= prod PLUS expr | prod MINUS expr | prod
-pub fn expr(input: &[u8]) -> Result<(u8, &[u8]), ()> {
+pub fn expr(input: &[u8]) -> Result<(f64, &[u8]), ()> {
     let (left, input) = prod(input)?;
     match input.get(0) {
         Some(&ADD) => {
@@ -24,7 +24,7 @@ pub fn expr(input: &[u8]) -> Result<(u8, &[u8]), ()> {
 }
 
 // prod ::= num MUL prod | num DIV prod | num
-pub fn prod(input: &[u8]) -> Result<(u8, &[u8]), ()> {
+pub fn prod(input: &[u8]) -> Result<(f64, &[u8]), ()> {
     let (left, input) = num(input)?;
     match input.get(0) {
         Some(&MUL) => {
@@ -33,20 +33,16 @@ pub fn prod(input: &[u8]) -> Result<(u8, &[u8]), ()> {
         },
         Some(&DIV) => {
             let (right, input) = prod(&input[1..])?;
-            if right != 0 {
-                Ok((left / right, input))
-            } else {
-                Err(())
-            }
+            Ok((left / right, input))
         },
         _ => Ok((left, input)),
     }
 }
 
 // num ::= FIVE | LPAREN expr RPAREN
-pub fn num(input: &[u8]) -> Result<(u8, &[u8]), ()> {
+pub fn num(input: &[u8]) -> Result<(f64, &[u8]), ()> {
     match input.get(0) {
-        Some(&FIVE) => Ok((5, &input[1..])),
+        Some(&FIVE) => Ok((5.0, &input[1..])),
         Some(&LPAREN) => {
             let (val, input) = expr(&input[1..])?;
             if input.get(0) != Some(&RPAREN) {
@@ -61,5 +57,5 @@ pub fn num(input: &[u8]) -> Result<(u8, &[u8]), ()> {
 
 #[test]
 fn minimal_conjecture() {
-    assert_eq!(expr(&[LPAREN, FIVE, MUL, FIVE, MUL, FIVE, ADD, FIVE, RPAREN, DIV, LPAREN, FIVE, ADD, FIVE, RPAREN]), Ok((13u8, &[][..])));
+    assert_eq!(expr(&[LPAREN, FIVE, MUL, FIVE, MUL, FIVE, ADD, FIVE, RPAREN, DIV, LPAREN, FIVE, ADD, FIVE, RPAREN]), Ok((13.0f64, &[][..])));
 }

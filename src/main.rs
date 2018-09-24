@@ -9,7 +9,7 @@ fn main() {
                 buf[digit] = (i % parser::BASE) as u8;
                 i /= parser::BASE;
             }
-            if parser::expr(&buf[0..len]) == Ok((13, &[])) {
+            if parser::expr(&buf[0..len]) == Ok((13.0, &[])) {
                 println!("{:?}", &buf[0..len]);
                 break 'outer;
             }
